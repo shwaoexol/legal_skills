@@ -1,14 +1,18 @@
 import { prisma } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
+import { saveUploadedFile } from '@/lib/upload'; 
 
 async function createTeacher(formData: FormData) {
   'use server';
+  const photoUrl = await saveUploadedFile(formData.get('photo') as File); 
+
   await prisma.teacher.create({
     data: {
       slug: formData.get('slug') as string,
       fullName: formData.get('fullName') as string,
       position: formData.get('position') as string,
       role: formData.get('role') as 'TEACHER' | 'DIRECTOR' | 'METHODIST' | 'STAFF',
+      photoUrl: photoUrl ?? undefined, 
     },
   });
   revalidatePath('/admin/teachers');
@@ -38,6 +42,7 @@ export default async function AdminTeachersPage() {
           <option value="METHODIST">Методист</option>
           <option value="STAFF">Сотрудник</option>
         </select>
+        <input type="file" name="photo" accept="image/*" className="block w-full rounded border p-2" /> 
         <button type="submit" className="rounded bg-black px-4 py-2 text-white">Добавить</button>
       </form>
 
@@ -45,6 +50,11 @@ export default async function AdminTeachersPage() {
         <tbody>
           {teachers.map((t) => (
             <tr key={t.id} className="border-t">
+              <td className="py-2"> 
+                {t.photoUrl && (
+                  <img src={t.photoUrl} alt="" className="h-10 w-10 rounded-full object-cover" />
+                )}
+              </td>
               <td className="py-2">{t.fullName}</td>
               <td className="py-2">{t.position}</td>
               <td className="py-2">

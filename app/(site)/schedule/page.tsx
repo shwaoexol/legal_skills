@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/db";
-import { group } from "console";
 
 
 export default async function SchedulePage(){

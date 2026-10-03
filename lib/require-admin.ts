@@ -1,4 +1,3 @@
-import { error } from "console";
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 
@@ -9,4 +8,5 @@ export async function requireAdmin() {
     if (!session?.user) {
         return { error: NextResponse.json({error: 'Не авторизован'}, { status: 401 })};
     }
+    return { session };
 }
