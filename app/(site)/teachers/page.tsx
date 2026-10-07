@@ -1,5 +1,13 @@
 import { prisma } from "@/lib/db";
 import { BannerPage } from "@/components/BannerPage";
+import Link from "next/link";
+
+const ROLE_LABELS: Record<string, string> = {
+  TEACHER: 'Преподаватель',
+  DIRECTOR: 'Руководство',
+  METHODIST: 'Методист',
+  STAFF: 'Сотрудник',
+};
 
 export default async function TeachersPage() {
   const teachers = await prisma.teacher.findMany({
@@ -20,19 +28,19 @@ export default async function TeachersPage() {
         ) : (
           <div className="grid grid-cols-2 gap-5 md:grid-cols-4">
             {teachers.map((teacher) => (
-              <div key={teacher.id}>
+              <Link key={teacher.id} href={`/teachers/${teacher.slug}`} className="group">
                 {teacher.photoUrl ? (
                   <img
                     src={teacher.photoUrl}
                     alt={teacher.fullName}
-                    className="aspect-square w-full rounded-lg object-cover"
+                    className="aspect-square w-full rounded-lg object-cover transition-opacity group-hover:opacity-90"
                   />
                 ) : (
                   <div className="aspect-square rounded-lg bg-cloud" />
                 )}
                 <p className="mt-2 text-sm font-medium text-navy-900">{teacher.fullName}</p>
-                <p className="text-xs text-navy-700/60">{teacher.position}</p>
-              </div>
+                <p className="text-xs text-navy-700/60">{ROLE_LABELS[teacher.role]} · {teacher.position}</p>
+              </Link>
             ))}
           </div>
         )}

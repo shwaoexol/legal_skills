@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { applicationSchema } from '@/lib/validations';
 import { requireAdmin } from '@/lib/require-admin';
+import { notifyNewApplication } from '@/lib/telegram';
 
 const recentRequests = new Map<string, number[]>();
 const LIMIT = 5;
@@ -27,7 +28,6 @@ export async function POST(req: NextRequest) {
 
   const body = await req.json();
 
-  // honeypot: бот заполнил скрытое поле, притворяемся, что всё хорошо
   if (body.website) {
     return NextResponse.json({ success: true });
   }
@@ -44,7 +44,19 @@ export async function POST(req: NextRequest) {
   try {
     const application = await prisma.application.create({
       data: parsed.data,
+      include: { course: true },
     });
+
+    notifyNewApplication({
+      name: application.name,
+      phone: application.phone,
+      telegram: application.telegram,
+      courseTitle: application.course?.title,
+      format: application.format ?? undefined,
+      preferredTime: application.preferredTime,
+      comment: application.comment,
+    }).catch((err) => console.error('Telegram notify failed:', err));
+
     return NextResponse.json(application, { status: 201 });
   } catch (error) {
     console.error(error);

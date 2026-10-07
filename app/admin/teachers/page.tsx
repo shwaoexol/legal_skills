@@ -4,7 +4,7 @@ import { saveUploadedFile } from '@/lib/upload';
 
 async function createTeacher(formData: FormData) {
   'use server';
-  const photoUrl = await saveUploadedFile(formData.get('photo') as File); 
+  const photoUrl = await saveUploadedFile(formData.get('photo') as File);
 
   await prisma.teacher.create({
     data: {
@@ -12,7 +12,10 @@ async function createTeacher(formData: FormData) {
       fullName: formData.get('fullName') as string,
       position: formData.get('position') as string,
       role: formData.get('role') as 'TEACHER' | 'DIRECTOR' | 'METHODIST' | 'STAFF',
-      photoUrl: photoUrl ?? undefined, 
+      education: (formData.get('education') as string) || undefined,
+      experience: (formData.get('experience') as string) || undefined,
+      bio: (formData.get('bio') as string) || undefined,
+      photoUrl: photoUrl ?? undefined,
     },
   });
   revalidatePath('/admin/teachers');
@@ -42,7 +45,10 @@ export default async function AdminTeachersPage() {
           <option value="METHODIST">Методист</option>
           <option value="STAFF">Сотрудник</option>
         </select>
-        <input type="file" name="photo" accept="image/*" className="block w-full rounded border p-2" /> 
+        <input name="education" placeholder="Образование" className="block w-full rounded border p-2" />
+        <input name="experience" placeholder="Опыт работы" className="block w-full rounded border p-2" />
+        <textarea name="bio" placeholder="Краткая биография" rows={3} className="block w-full rounded border p-2" />
+        <input type="file" name="photo" accept="image/*" className="block w-full rounded border p-2" />
         <button type="submit" className="rounded bg-black px-4 py-2 text-white">Добавить</button>
       </form>
 

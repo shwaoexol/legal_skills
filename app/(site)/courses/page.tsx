@@ -1,6 +1,12 @@
 import { prisma } from "@/lib/db";
 import Link from "next/link";
 
+import type { Metadata } from "next";
+export const metadata: Metadata = {
+  title: "Курсы",
+  description: "9 направлений обучения в Legal Skills Academy: право, английский язык, бухгалтерия, HR, психология.",
+};
+
 
 export default async function CoursesPage(){
     const courses = await prisma.course.findMany({

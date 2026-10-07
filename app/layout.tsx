@@ -8,8 +8,18 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "Legal Skills Academy",
-  description: "Учебный центр",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
+  title: {
+    default: "Legal Skills Academy",
+    template: "%s | Legal Skills Academy",
+  },
+  description: "Учебный центр: право, английский язык для юристов, бухгалтерия, HR, психология. 9 направлений обучения в Ташкенте.",
+  openGraph: {
+    title: "Legal Skills Academy",
+    description: "Учебный центр: право, английский язык для юристов, бухгалтерия, HR, психология.",
+    locale: "ru_RU",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

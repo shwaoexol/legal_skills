@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "cross-env NODE_OPTIONS=--dns-result-order=ipv4first next dev",
+    "build": "cross-env NODE_OPTIONS=--dns-result-order=ipv4first next build",
     "start": "next start",
     "lint": "eslint",
     "postinstall": "prisma generate"
@@ -16,6 +16,7 @@
     "next-auth": "^5.0.0-beta.32",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "xlsx": "^0.18.5",
     "zod": "^4.6.5"
   },
   "devDependencies": {
